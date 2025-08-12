@@ -1,0 +1,65 @@
+autoinstall:
+  version: 1
+  identity:
+    hostname: debian12
+    username: youruser
+    password: "$6$rounds=4096$saltsalt$encryptedpasswordhash"  # Replace with your hashed password
+  storage:
+    config:
+      - type: disk
+        id: disk0
+        path: /dev/nvme0n1
+        ptable: gpt
+        wipe: superblock-recursive
+        grub_device: true
+        preserve: false
+        partitions:
+          - id: efi-partition
+            size: 512M
+            type: efi
+            flag: boot
+            filesystem:
+              type: fat32
+              mount:
+                point: /boot/efi
+          - id: boot-partition
+            size: 550M
+            type: partition
+            flag: boot
+            filesystem:
+              type: ext2
+              mount:
+                point: /boot
+          - id: luks-partition
+            size: 100%FREE
+            type: partition
+            crypt:
+              type: luks
+              passphrase: your-luks-passphrase
+            children:
+              - id: lvm-vg
+                type: lvm_vg
+                name: vg_system
+                children:
+                  - id: lv-root
+                    type: lvm_lv
+                    name: lv_root
+                    size: 1G
+                    filesystem:
+                      type: ext4
+                      mount:
+                        point: /
+                  - id: lv-swap
+                    type: lvm_lv
+                    name: lv_swap
+                    size: 16M
+                    filesystem:
+                      type: swap
+                  - id: lv-home
+                    type: lvm_lv
+                    name: lv_home
+                    size: 100%FREE
+                    filesystem:
+                      type: ext4
+                      mount:
+                        point: /home
