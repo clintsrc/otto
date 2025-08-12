@@ -1,12 +1,14 @@
+# autoinstall example with LUKS + LVM from Ubuntu docs
 autoinstall:
   version: 1
   identity:
-    hostname: debian12
-    username: youruser
+    hostname: ubuntu
+    username: ubuntu
     password: "$6$MJhc4qslrbrlbLKR$fLW7SoYyhzbQewd4LewilSoXeN0uaJGdvbfci9hwueJ5wbJHldCHfH4Fw8sCDmkO0hyQWJNa8F.mXXCsnw25z/" # Replace with your hashed password
   storage:
     config:
       - type: disk
+        id: disk0
         path: /dev/nvme0n1
         ptable: gpt
         wipe: superblock-recursive
@@ -29,34 +31,34 @@ autoinstall:
               type: ext2
               mount:
                 point: /boot
-          - id: crypt-partition
+          - id: crypt
             size: 100%FREE
             type: partition
             crypt:
               type: luks
-              passphrase: luks-passphrase
+              passphrase: your-luks-passphrase
             children:
-              - id: vg_system
+              - id: vg0
                 type: lvm_vg
-                name: vg_system
+                name: vg0
                 children:
-                  - id: lv_root
+                  - id: lvroot
                     type: lvm_lv
-                    name: lv_root
-                    size: 1G
+                    name: lvroot
+                    size: 20G
                     filesystem:
                       type: ext4
                       mount:
                         point: /
-                  - id: lv_swap
+                  - id: lvswap
                     type: lvm_lv
-                    name: lv_swap
-                    size: 16M
+                    name: lvswap
+                    size: 2G
                     filesystem:
                       type: swap
-                  - id: lv_home
+                  - id: lvhome
                     type: lvm_lv
-                    name: lv_home
+                    name: lvhome
                     size: 100%FREE
                     filesystem:
                       type: ext4
