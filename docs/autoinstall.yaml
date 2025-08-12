@@ -3,18 +3,17 @@ autoinstall:
   identity:
     hostname: debian12
     username: youruser
-    password: "$6$rounds=4096$saltsalt$encryptedpasswordhash"  # Replace with your hashed password
+    password: "$6$rounds=4096$saltsalt$encryptedpasswordhash" # Replace with your hashed password
   storage:
     config:
       - type: disk
-        id: disk0
         path: /dev/nvme0n1
         ptable: gpt
         wipe: superblock-recursive
         grub_device: true
         preserve: false
         partitions:
-          - id: efi-partition
+          - id: efi
             size: 512M
             type: efi
             flag: boot
@@ -22,7 +21,7 @@ autoinstall:
               type: fat32
               mount:
                 point: /boot/efi
-          - id: boot-partition
+          - id: boot
             size: 550M
             type: partition
             flag: boot
@@ -30,18 +29,18 @@ autoinstall:
               type: ext2
               mount:
                 point: /boot
-          - id: luks-partition
+          - id: crypt-partition
             size: 100%FREE
             type: partition
             crypt:
               type: luks
-              passphrase: your-luks-passphrase
+              passphrase: luks-passphrase
             children:
-              - id: lvm-vg
+              - id: vg_system
                 type: lvm_vg
                 name: vg_system
                 children:
-                  - id: lv-root
+                  - id: lv_root
                     type: lvm_lv
                     name: lv_root
                     size: 1G
@@ -49,13 +48,13 @@ autoinstall:
                       type: ext4
                       mount:
                         point: /
-                  - id: lv-swap
+                  - id: lv_swap
                     type: lvm_lv
                     name: lv_swap
                     size: 16M
                     filesystem:
                       type: swap
-                  - id: lv-home
+                  - id: lv_home
                     type: lvm_lv
                     name: lv_home
                     size: 100%FREE
