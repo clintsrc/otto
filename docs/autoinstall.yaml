@@ -3,7 +3,7 @@ autoinstall:
   identity:
     hostname: debian12
     username: youruser
-    password: "$6$rounds=4096$saltsalt$encryptedpasswordhash" # Replace with your hashed password
+    password: "$6$MJhc4qslrbrlbLKR$fLW7SoYyhzbQewd4LewilSoXeN0uaJGdvbfci9hwueJ5wbJHldCHfH4Fw8sCDmkO0hyQWJNa8F.mXXCsnw25z/" # Replace with your hashed password
   storage:
     config:
       - type: disk
