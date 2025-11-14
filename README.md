@@ -1,2 +1,2 @@
 # otto
-Debian preseed script host
+Debian preseed script host experiment
